@@ -93,7 +93,10 @@ class Test_Driiive {
 		shell_exec( escapeshellcmd( "{$base_cmd} core install --title='Just another Test Driiive Site' --admin_user={$user_login} --admin_email={$email} --admin_password={$password}" ) );
 		shell_exec( escapeshellcmd( "{$base_cmd} theme activate {$theme->get_stylesheet()}" ) );
 
-		wp_redirect( $demo_site_url );
+		wp_redirect( add_query_arg( array(
+			'auto-login'     => $user_login,
+			'secret'         => td_get_auto_login_secret( $user_login ),
+			), $demo_site_url ) );
 		exit;
 	}
 
