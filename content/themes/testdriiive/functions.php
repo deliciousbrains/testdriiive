@@ -48,6 +48,28 @@ class Test_Driiive {
 
 	}
 
+	/**
+	 * Get the selected theme the user wants to sign up for
+	 *
+	 * @return WP_Theme|false
+	 */
+	public function get_selected_theme() {
+
+		if ( 0 !== strpos( $_SERVER['REQUEST_URI'], '/theme/' ) ) {
+			return false;
+		}
+
+		$theme_slug = sanitize_key( str_replace( '/theme/', '', $_SERVER['REQUEST_URI'] ) );
+
+		$theme_obj = wp_get_theme( $theme_slug );
+		if ( $theme_obj->exists() ) {
+			return $theme_obj;
+		} else {
+			return false;
+		}
+
+	}
+
 }
 
 /**

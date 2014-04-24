@@ -7,6 +7,10 @@ Author URI:     http://handbuilt.co
 Version:        0.1.0
 */
 
+form#lead-capture {
+	margin-top: 5rem;
+}
+
 form fieldset {
 	border: none;
 	margin-top: 0rem;
