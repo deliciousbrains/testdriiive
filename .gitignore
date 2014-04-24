@@ -1,0 +1,6 @@
+# Local files
+/wp-config-env.php
+/wp-cli.local.yml
+
+# Silly Mac
+.DS_Store
