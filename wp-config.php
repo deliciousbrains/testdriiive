@@ -31,15 +31,14 @@ if ( empty( $db_name ) ) {
 	$wp_home = 'testdriiive.com';
 }
 
-global $td_demo_site;
+global $td_demo_site, $table_prefix;
 
 if ( ! empty( $_SERVER['REQUEST_URI'] ) ) {
 
 	preg_match( "#/demo/([a-z0-9_\-]+)#", $_SERVER['REQUEST_URI'], $matches );
 	if ( ! empty( $matches[1] ) ) {
 		$td_demo_site = $matches[1];
-		$db_name .= '_' . $td_demo_site;
-		$wp_home .= '/demo/' . $td_demo_site . '/';
+		$table_prefix = 'wp_' . $td_demo_site . '_';
 	} else {
 		$td_demo_site = false;
 	}
@@ -50,7 +49,7 @@ if ( ! empty( $_SERVER['REQUEST_URI'] ) ) {
  */
 
 $wp_constant_defaults = array(
-	'DB_NAME'            => $db_name,
+	'DB_NAME'            => '',
 	'DB_USER'            => '',
 	'DB_PASSWORD'        => '',
 	'DB_HOST'            => 'localhost',
@@ -65,7 +64,7 @@ $wp_constant_defaults = array(
 	'LOGGED_IN_SALT'     => '',
 	'NONCE_SALT'         => '',
 	'WP_SITEURL'         => 'http://testdriiive.com/wp',
-	'WP_HOME'            => $wp_home,
+	'WP_HOME'            => 'http://testdriiive.com',
 	);
 
 foreach( $wp_constant_defaults as $key => $value ) {
@@ -80,13 +79,9 @@ if ( isset( $_SERVER['WP_CLI_PHP_USED'] )
 	$_SERVER['HTTP_HOST'] = parse_url( WP_HOME, PHP_URL_HOST );
 }
 
-/**
- * WordPress Database Table prefix.
- *
- * You can have multiple installations in one database if you give each a unique
- * prefix. Only numbers, letters, and underscores please!
- */
-$table_prefix  = 'wp_';
+if ( empty( $table_prefix ) ) {
+	$table_prefix = 'wp_';
+}
 
 /**
  * WordPress Localized Language, defaults to English.
