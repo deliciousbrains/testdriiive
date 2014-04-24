@@ -30,15 +30,19 @@ if ( empty( $db_name ) ) {
 	$db_name = 'testdriiive';
 	$wp_home = 'testdriiive.com';
 }
-if ( ! empty( $_SERVER['REQUEST_URI'] ) && 0 === strpos( $_SERVER['REQUEST_URI'], '/demo/' ) ) {
-	$parts = explode( '/', $_SERVER['REQUEST_URI'] );
-	$demo_site_slug = strtolower( $parts[2] );
-	$demo_site_slug = preg_replace( '/[^a-z0-9_\-]/', '', $demo_site_slug );
-	$db_name .= '_' . $demo_site_slug;
-	$wp_home .= '/demo/' . $demo_site_slug . '/';
-	define( 'TEST_DRIIIVE_DEMO_SITE', true );
-} else {
-	define( 'TEST_DRIIIVE_DEMO_SITE', false );
+
+global $td_demo_site;
+
+if ( ! empty( $_SERVER['REQUEST_URI'] ) ) {
+
+	preg_match( "#/demo/([a-z0-9_\-]+)#", $_SERVER['REQUEST_URI'], $matches );
+	if ( ! empty( $matches[1] ) ) {
+		$td_demo_site = $matches[1];
+		$db_name .= '_' . $td_demo_site;
+		$wp_home .= '/demo/' . $td_demo_site . '/';
+	} else {
+		$td_demo_site = false;
+	}
 }
 
 /**
