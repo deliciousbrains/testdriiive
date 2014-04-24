@@ -7,7 +7,7 @@ Test drive premium WordPress themes.
 
 Given a fully-functional LAMP (or similar) stack, get hacking on the application with these steps:
 
-1. Clone the repo: git clone --recursive git@github.com:deliciousbrains/testdriiive.git testdriiive.dev
+1. Clone the repo: `git clone --recursive git@github.com:deliciousbrains/testdriiive.git testdriiive.dev`
 2. Add a `/etc/hosts` record: `192.168.50.10 testdriiive.dev` (where the first is the IP for your local machine)
 3. Create a wp-config-env.php file:
 
