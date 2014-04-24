@@ -92,6 +92,7 @@ class Test_Driiive {
 		$base_cmd = "wp --url={$demo_site_url}";
 		shell_exec( escapeshellcmd( "{$base_cmd} core install --title='Just another Test Driiive Site' --admin_user={$user_login} --admin_email={$email} --admin_password={$password}" ) );
 		shell_exec( escapeshellcmd( "{$base_cmd} theme activate {$theme->get_stylesheet()}" ) );
+		shell_exec( escapeshellcmd( "{$base_cmd} user update {$user_login} --display_name='{$name}'" ) );
 
 		wp_redirect( add_query_arg( array(
 			'auto-login'     => $user_login,
