@@ -19,15 +19,34 @@
  * Don't edit this file directly, instead, create a wp-config-env.php file and add your database
  * settings and defines in there. This file contains the production settings
  */
-if ( file_exists( dirname( __FILE__ ) . '/wp-config-env.php' ) ) 
+if ( file_exists( dirname( __FILE__ ) . '/wp-config-env.php' ) ) {
 	include( dirname( __FILE__ ) . '/wp-config-env.php' );
+}
+
+/**
+ * Magic db-switching action
+ */
+if ( empty( $db_name ) ) {
+	$db_name = 'testdriiive';
+	$wp_home = 'testdriiive.com';
+}
+if ( ! empty( $_SERVER['REQUEST_URI'] ) && 0 === strpos( $_SERVER['REQUEST_URI'], '/demo/' ) ) {
+	$parts = explode( '/', $_SERVER['REQUEST_URI'] );
+	$demo_site_slug = strtolower( $parts[2] );
+	$demo_site_slug = preg_replace( '/[^a-z0-9_\-]/', '', $demo_site_slug );
+	$db_name .= '_' . $demo_site_slug;
+	$wp_home .= '/demo/' . $demo_site_slug . '/';
+	define( 'TEST_DRIIIVE_DEMO_SITE', true );
+} else {
+	define( 'TEST_DRIIIVE_DEMO_SITE', false );
+}
 
 /**
  *	Production settings.
  */
 
 $wp_constant_defaults = array(
-	'DB_NAME'            => '',
+	'DB_NAME'            => $db_name,
 	'DB_USER'            => '',
 	'DB_PASSWORD'        => '',
 	'DB_HOST'            => 'localhost',
@@ -42,7 +61,7 @@ $wp_constant_defaults = array(
 	'LOGGED_IN_SALT'     => '',
 	'NONCE_SALT'         => '',
 	'WP_SITEURL'         => 'http://testdriiive.com/wp',
-	'WP_HOME'            => 'http://testdriiive.com'
+	'WP_HOME'            => $wp_home,
 	);
 
 foreach( $wp_constant_defaults as $key => $value ) {

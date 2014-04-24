@@ -13,14 +13,13 @@ Given a fully-functional LAMP (or similar) stack, get hacking on the application
 
   ```
   <?php
-
-  define( 'DB_NAME', 'testdriiive' );
   define( 'DB_USER', 'root' );
-
   define( 'LOCAL_DEV', true );
-
   define( 'WP_SITEURL', 'http://testdriiive.dev/wp' );
-  define( 'WP_HOME', 'http://testdriiive.dev' );
+
+  // Don't define as constants because these need to be dynamic
+  $db_name = 'testdriiive';
+  $wp_home = 'http://testdriiive.dev';
   ```
 
 4. Use WP-CLI to create the database and install WordPress: `wp db create; wp core install --prompt`

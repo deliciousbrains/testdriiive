@@ -32,6 +32,7 @@ class Test_Driiive {
 	private function setup_actions() {
 
 		add_action( 'wp_enqueue_scripts', array( $this, 'action_wp_enqueue_scripts' ) );
+		add_action( 'template_redirect', array( $this, 'action_template_redirect_handle_form_submission' ) );
 
 	}
 
@@ -46,6 +47,55 @@ class Test_Driiive {
 
 		wp_enqueue_style( 'test-driiive', get_stylesheet_uri() );
 
+	}
+
+	/**
+	 * Handle the lead capture form submission
+	 */
+	public function action_template_redirect_handle_form_submission() {
+
+		if ( false == ( $theme = $this->get_selected_theme() ) ) {
+			return;
+		}
+
+		if ( empty( $_POST['action'] ) || 'test-driiive-theme' !== $_POST['action'] ) {
+			return;
+		}
+
+		// @todo if the user is already logged in, they shouldn't be
+
+		if ( empty( $_POST['name'] ) || empty( $_POST['email'] ) ) {
+			wp_die( __( 'Both name and email address are required details.', 'testdriiive' ) );
+		}
+
+		/**
+		 * Create a user account
+		 */
+		$name = sanitize_text_field( $_POST['name'] );
+		$email = sanitize_email( $_POST['email'] );
+		$user_login = md5( $name . $email . time() );
+		$password = wp_generate_password();
+		$user_id = wp_insert_user( array(
+			'user_login' => $user_login,
+			'user_email' => $email,
+			'display_name' => $name,
+			'user_pass' => $password
+		) );
+		if ( is_wp_error( $user_id ) ) {
+			wp_die( $user_id->get_error_message() );
+		}
+
+		/**
+		 * Configure their demo site
+		 */
+		$demo_site_url = $this->get_user_demo_site_url( $user_id );
+		$base_cmd = "wp --url={$demo_site_url}";
+		shell_exec( escapeshellcmd( "{$base_cmd} db create" ) );
+		shell_exec( escapeshellcmd( "{$base_cmd} core install --title='Just another Test Driiive Site' --admin_user={$user_login} --admin_email={$email} --admin_password={$password}" ) );
+		shell_exec( escapeshellcmd( "{$base_cmd} theme activate {$theme->get_stylesheet()}" ) );
+
+		wp_redirect( $demo_site_url );
+		exit;
 	}
 
 	/**
@@ -68,6 +118,21 @@ class Test_Driiive {
 			return false;
 		}
 
+	}
+
+	/**
+	 * Get the demo site URL for a given user
+	 *
+	 * @param mixed $user
+	 * @return string
+	 */
+	public function get_user_demo_site_url( $user ) {
+
+		if ( is_numeric( $user ) ) {
+			$user = get_user_by( 'id', $user );
+		}
+
+		return home_url( 'demo/' . $user->user_login . '/' );
 	}
 
 }
