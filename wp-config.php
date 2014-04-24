@@ -19,8 +19,40 @@
  * Don't edit this file directly, instead, create a wp-config-env.php file and add your database
  * settings and defines in there. This file contains the production settings
  */
-if ( file_exists( dirname( __FILE__ ) . '/wp-config-env.php' ) ) 
+if ( file_exists( dirname( __FILE__ ) . '/wp-config-env.php' ) ) {
 	include( dirname( __FILE__ ) . '/wp-config-env.php' );
+}
+
+/**
+ * Magic db-switching action
+ */
+global $td_demo_site, $table_prefix;
+
+if ( ! empty( $_SERVER['HTTP_HOST'] ) ) {
+
+	$parts = explode( '.', $_SERVER['HTTP_HOST'] );
+	if ( count( $parts ) > 2 ) {
+		$key = array_shift( $parts );
+		$key = strtolower( $key );
+		$td_demo_site = preg_replace( '/[^a-z0-9_\-]/', '', $key );
+	} else {
+		$td_demo_site = false;
+	}
+
+}
+
+if ( ! empty( $td_demo_site ) ) {
+	$table_prefix = 'wp_' . $td_demo_site . '_';
+} else {
+	$table_prefix = 'wp_';
+}
+
+
+if ( isset( $_SERVER['WP_CLI_PHP_USED'] )
+	&& ! isset( $_SERVER['HTTP_HOST'] ) ) {
+	$_SERVER['HTTP_HOST'] = defined( 'LOCAL_DEV') && LOCAL_DEV ? 'testdriiive.dev' : 'testdriiive.com';
+}
+
 
 /**
  *	Production settings.
@@ -41,8 +73,8 @@ $wp_constant_defaults = array(
 	'SECURE_AUTH_SALT'   => '',
 	'LOGGED_IN_SALT'     => '',
 	'NONCE_SALT'         => '',
-	'WP_SITEURL'         => 'http://testdriiive.com/wp',
-	'WP_HOME'            => 'http://testdriiive.com'
+	'WP_SITEURL'         => 'http://' . $_SERVER['HTTP_HOST'] . '/wp',
+	'WP_HOME'            => 'http://' . $_SERVER['HTTP_HOST'],
 	);
 
 foreach( $wp_constant_defaults as $key => $value ) {
@@ -50,20 +82,6 @@ foreach( $wp_constant_defaults as $key => $value ) {
 		define( $key, $value );
 	}
 }
-
-if ( isset( $_SERVER['WP_CLI_PHP_USED'] )
-	&& ! isset( $_SERVER['HTTP_HOST'] )
-	&& defined( 'WP_HOME' ) ) {
-	$_SERVER['HTTP_HOST'] = parse_url( WP_HOME, PHP_URL_HOST );
-}
-
-/**
- * WordPress Database Table prefix.
- *
- * You can have multiple installations in one database if you give each a unique
- * prefix. Only numbers, letters, and underscores please!
- */
-$table_prefix  = 'wp_';
 
 /**
  * WordPress Localized Language, defaults to English.
@@ -97,12 +115,13 @@ if ( defined( 'LOCAL_DEV' ) && LOCAL_DEV ) {
 }
 
 // Define path & url for Content
+define( 'WP_BASE_URL', parse_url( WP_HOME, PHP_URL_SCHEME ) . '://' . parse_url( WP_HOME, PHP_URL_HOST ) );
 define( 'WP_CONTENT_DIR', dirname( __FILE__ ) . '/content' );
-define( 'WP_CONTENT_URL', WP_HOME . '/content' );
+define( 'WP_CONTENT_URL', WP_BASE_URL . '/content' );
 
 // Set path to MU Plugins.
 define( 'WPMU_PLUGIN_DIR', dirname( __FILE__ ) . '/content/mu-plugins' );
-define( 'WPMU_PLUGIN_URL', WP_HOME . '/content/mu-plugins' );
+define( 'WPMU_PLUGIN_URL', WP_BASE_URL . '/content/mu-plugins' );
 
 // Set default theme.
 define( 'WP_DEFAULT_THEME', 'testdriiive' );

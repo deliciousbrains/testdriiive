@@ -30,6 +30,7 @@
 					</fieldset>
 
 					<fieldset>
+						<input type="hidden" name="action" value="test-driiive-theme" />
 						<input id="submit" name="submit" type="submit" class="button radius" value="<?php echo esc_attr( sprintf( __( 'Test Drive %s', 'testdriiive' ), $theme->get( 'Name' ) ) ); ?>" <?php if ( empty( $theme ) ) : ?> disabled <?php endif; ?> />
 					</fieldset>
 
