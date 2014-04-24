@@ -92,9 +92,6 @@ class Test_Driiive {
 		$base_cmd = "wp --url={$demo_site_url}";
 		shell_exec( escapeshellcmd( "{$base_cmd} core install --title='Just another Test Driiive Site' --admin_user={$user_login} --admin_email={$email} --admin_password={$password}" ) );
 		shell_exec( escapeshellcmd( "{$base_cmd} theme activate {$theme->get_stylesheet()}" ) );
-		$home_url = rtrim( $demo_site_url, '/' );
-		shell_exec( escapeshellcmd( "{$base_cmd} option update home {$home_url}" ) );
-		shell_exec( escapeshellcmd( "{$base_cmd} option update siteurl {$home_url}/wp" ) );
 
 		wp_redirect( $demo_site_url );
 		exit;
@@ -134,7 +131,8 @@ class Test_Driiive {
 			$user = get_user_by( 'id', $user );
 		}
 
-		return home_url( 'demo/' . $user->user_login . '/' );
+		$home_domain = parse_url( home_url(), PHP_URL_HOST );
+		return parse_url( home_url(), PHP_URL_SCHEME ) . '://' . $user->user_login . '.' . $home_domain;
 	}
 
 }

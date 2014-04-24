@@ -26,23 +26,33 @@ if ( file_exists( dirname( __FILE__ ) . '/wp-config-env.php' ) ) {
 /**
  * Magic db-switching action
  */
-if ( empty( $db_name ) ) {
-	$db_name = 'testdriiive';
-	$wp_home = 'testdriiive.com';
-}
-
 global $td_demo_site, $table_prefix;
 
-if ( ! empty( $_SERVER['REQUEST_URI'] ) ) {
+if ( ! empty( $_SERVER['HTTP_HOST'] ) ) {
 
-	preg_match( "#/demo/([a-z0-9_\-]+)#", $_SERVER['REQUEST_URI'], $matches );
-	if ( ! empty( $matches[1] ) ) {
-		$td_demo_site = $matches[1];
-		$table_prefix = 'wp_' . $td_demo_site . '_';
+	$parts = explode( '.', $_SERVER['HTTP_HOST'] );
+	if ( count( $parts ) > 2 ) {
+		$key = array_shift( $parts );
+		$key = strtolower( $key );
+		$td_demo_site = preg_replace( '/[^a-z0-9_\-]/', '', $key );
 	} else {
 		$td_demo_site = false;
 	}
+
 }
+
+if ( ! empty( $td_demo_site ) ) {
+	$table_prefix = 'wp_' . $td_demo_site . '_';
+} else {
+	$table_prefix = 'wp_';
+}
+
+
+if ( isset( $_SERVER['WP_CLI_PHP_USED'] )
+	&& ! isset( $_SERVER['HTTP_HOST'] ) ) {
+	$_SERVER['HTTP_HOST'] = defined( 'LOCAL_DEV') && LOCAL_DEV ? 'testdriiive.dev' : 'testdriiive.com';
+}
+
 
 /**
  *	Production settings.
@@ -63,24 +73,14 @@ $wp_constant_defaults = array(
 	'SECURE_AUTH_SALT'   => '',
 	'LOGGED_IN_SALT'     => '',
 	'NONCE_SALT'         => '',
-	'WP_SITEURL'         => 'http://testdriiive.com/wp',
-	'WP_HOME'            => 'http://testdriiive.com',
+	'WP_SITEURL'         => 'http://' . $_SERVER['HTTP_HOST'] . '/wp',
+	'WP_HOME'            => 'http://' . $_SERVER['HTTP_HOST'],
 	);
 
 foreach( $wp_constant_defaults as $key => $value ) {
 	if ( ! defined( $key ) ) {
 		define( $key, $value );
 	}
-}
-
-if ( isset( $_SERVER['WP_CLI_PHP_USED'] )
-	&& ! isset( $_SERVER['HTTP_HOST'] )
-	&& defined( 'WP_HOME' ) ) {
-	$_SERVER['HTTP_HOST'] = parse_url( WP_HOME, PHP_URL_HOST );
-}
-
-if ( empty( $table_prefix ) ) {
-	$table_prefix = 'wp_';
 }
 
 /**
