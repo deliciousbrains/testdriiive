@@ -116,12 +116,13 @@ if ( defined( 'LOCAL_DEV' ) && LOCAL_DEV ) {
 }
 
 // Define path & url for Content
+define( 'WP_BASE_URL', parse_url( WP_HOME, PHP_URL_SCHEME ) . '://' . parse_url( WP_HOME, PHP_URL_HOST ) );
 define( 'WP_CONTENT_DIR', dirname( __FILE__ ) . '/content' );
-define( 'WP_CONTENT_URL', WP_HOME . '/content' );
+define( 'WP_CONTENT_URL', WP_BASE_URL . '/content' );
 
 // Set path to MU Plugins.
 define( 'WPMU_PLUGIN_DIR', dirname( __FILE__ ) . '/content/mu-plugins' );
-define( 'WPMU_PLUGIN_URL', WP_HOME . '/content/mu-plugins' );
+define( 'WPMU_PLUGIN_URL', WP_BASE_URL . '/content/mu-plugins' );
 
 // Set default theme.
 define( 'WP_DEFAULT_THEME', 'testdriiive' );
