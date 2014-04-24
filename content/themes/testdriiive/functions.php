@@ -93,6 +93,9 @@ class Test_Driiive {
 		shell_exec( escapeshellcmd( "{$base_cmd} db create" ) );
 		shell_exec( escapeshellcmd( "{$base_cmd} core install --title='Just another Test Driiive Site' --admin_user={$user_login} --admin_email={$email} --admin_password={$password}" ) );
 		shell_exec( escapeshellcmd( "{$base_cmd} theme activate {$theme->get_stylesheet()}" ) );
+		$home_url = rtrim( $demo_site_url, '/' );
+		shell_exec( escapeshellcmd( "{$base_cmd} option update home {$home_url}" ) );
+		shell_exec( escapeshellcmd( "{$base_cmd} option update siteurl {$home_url}/wp" ) );
 
 		wp_redirect( $demo_site_url );
 		exit;
