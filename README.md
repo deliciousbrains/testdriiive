@@ -16,8 +16,6 @@ Given a fully-functional LAMP (or similar) stack, get hacking on the application
   define( 'DB_NAME', 'testdriiive' );
   define( 'DB_USER', 'root' );
   define( 'LOCAL_DEV', true );
-  define( 'WP_SITEURL', 'http://testdriiive.dev/wp' );
-  define( 'WP_HOME', 'http://testdriiive.dev' );
   ```
 
 4. Use WP-CLI to create the database and install WordPress: `wp db create; wp core install --prompt`
