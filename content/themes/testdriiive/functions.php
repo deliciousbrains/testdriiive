@@ -62,8 +62,6 @@ class Test_Driiive {
 			return;
 		}
 
-		// @todo if the user is already logged in, they shouldn't be
-
 		if ( empty( $_POST['first-name'] ) || empty( $_POST['last-name'] ) || empty( $_POST['email'] ) ) {
 			$error_message = __( 'Both name and email address are required details.', 'testdriiive' );
 			if ( ! empty( $_POST['in-iframe'] ) ) {
@@ -71,6 +69,31 @@ class Test_Driiive {
 			} else {
 				wp_die( $error_message );
 			}
+			exit;
+		}
+
+		if ( $user = get_user_by( 'email', sanitize_email( $_POST['email'] ) ) ) {
+
+			$vars = array(
+				'user'            => $user,
+				'theme'           => $theme,
+				'auto_login_url'  => $this->get_user_auto_login_url( $user ),
+				);
+			$message = Test_Driiive()->get_template( 'emails/returning-user', $vars );
+			$subject = sprintf( '%s theme test drive', $theme->get( 'Name' ) );
+			wp_mail( $user->user_email, $subject, $message );
+
+			$demo_site_url = $this->get_user_demo_site_url( $user );
+			$base_cmd = "wp --url={$demo_site_url}";
+			shell_exec( escapeshellcmd( "{$base_cmd} theme activate {$theme->get_stylesheet()}" ) );
+
+			$error_message = __( "Welcome back, I see that you already have a test drive account! I've just sent you an email with a special link to securely access your test drive site.", 'testdriiive' );
+			if ( ! empty( $_POST['in-iframe'] ) ) {
+				echo json_encode( array( 'status' => 'error', 'message' => $error_message ) );
+			} else {
+				wp_die( $error_message );
+			}
+
 			exit;
 		}
 
@@ -128,10 +151,7 @@ class Test_Driiive {
 		$subject = sprintf( '%s theme test drive', $theme->get( 'Name' ) );
 		wp_mail( $user->user_email, $subject, $message );
 
-		$auto_login_url = add_query_arg( array(
-				'auto-login'     => $user_login,
-				'secret'         => td_get_auto_login_secret( $user_login ),
-				), $demo_site_url );
+		$auto_login_url = $this->get_user_auto_login_url( $user );
 		if ( ! empty( $_POST['in-iframe'] ) ) {
 			echo json_encode( array( 'status' => 'success', 'message' => $auto_login_url ) );
 		} else {
@@ -176,6 +196,19 @@ class Test_Driiive {
 
 		$home_domain = parse_url( home_url(), PHP_URL_HOST );
 		return parse_url( home_url(), PHP_URL_SCHEME ) . '://' . $user->user_login . '.' . $home_domain;
+	}
+
+	/**
+	 * Get the auto-login URL for a user
+	 *
+	 * @param string $user_login
+	 * @return string
+	 */
+	public function get_user_auto_login_url( $user ) {
+		return add_query_arg( array(
+				'auto-login'     => $user->user_login,
+				'secret'         => td_get_auto_login_secret( $user->user_login ),
+				), $this->get_user_demo_site_url( $user ) );
 	}
 
 	/**
