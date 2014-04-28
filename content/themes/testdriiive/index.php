@@ -2,47 +2,51 @@
 
 	<section class="row">
 
-		<div class="small-12 medium-10 medium-offset-1 large-8 large-offset-2 column">
+		<form id="lead-capture" method="POST">
 
-			<form id="lead-capture" method="POST">
+			<?php if ( $theme = Test_Driiive()->get_selected_theme() ) : ?>
 
-				<?php if ( $theme = Test_Driiive()->get_selected_theme() ) : ?>
+				<fieldset class="small-12 medium-10 medium-offset-1 large-8 large-offset-2 column">
+					<h2><?php printf( __( 'You are one step away from test driving %s', 'testdriiive' ), $theme->get( 'Name' ) ); ?></h2>
 
-					<fieldset>
-						<h2><?php printf( __( 'You are one step away from test driving %s', 'testdriiive' ), $theme->get( 'Name' ) ); ?></h2>
+					<?php if ( $screenshot = $theme->get_screenshot() ) : ?>
+						<img src="<?php echo esc_url( $screenshot ); ?>" />
+					<?php endif; ?>
 
-						<?php if ( $screenshot = $theme->get_screenshot() ) : ?>
-							<img src="<?php echo esc_url( $screenshot ); ?>" />
-						<?php endif; ?>
+				</fieldset>
 
-					</fieldset>
+				<fieldset class="small-6 medium-5 large-4 medium-offset-1 large-offset-2 column">
+					<label for="first-name"><?php _e( 'First Name', 'testdriiive' ); ?>
+						<input id="first-name" name="first-name" type="text" required />
+					</label>
+				</fieldset>
 
-					<fieldset>
-						<label for="name"><?php _e( 'Name', 'testdriiive' ); ?>
-							<input id="name" name="name" type="text" required />
-						</label>
-					</fieldset>
+				<fieldset class="small-6 medium-5 large-4 column">
+					<label for="last-name"><?php _e( 'Last Name', 'testdriiive' ); ?>
+						<input id="last-name" name="last-name" type="text" required />
+					</label>
+				</fieldset>
 
-					<fieldset>
-						<label for="email"><?php _e( 'Email', 'testdriiive' ); ?>
-							<input id="email" name="email" type="email" required />
-						</label>
-					</fieldset>
+				</div>
 
-					<fieldset>
-						<input type="hidden" name="action" value="test-driiive-theme" />
-						<input id="submit" name="submit" type="submit" class="button radius" value="<?php echo esc_attr( sprintf( __( 'Test Drive %s', 'testdriiive' ), $theme->get( 'Name' ) ) ); ?>" <?php if ( empty( $theme ) ) : ?> disabled <?php endif; ?> />
-					</fieldset>
+				<fieldset class="small-12 medium-10 medium-offset-1 large-8 large-offset-2 column">
+					<label for="email"><?php _e( 'Email', 'testdriiive' ); ?>
+						<input id="email" name="email" type="email" required />
+					</label>
+				</fieldset>
 
-				<?php else : ?>
-					<div class="alert-box warning">
- 						<p><?php _e( 'Invalid theme specified.', 'testdriiive' ); ?></p>
-					</div>
-				<?php endif; ?>
+				<fieldset class="small-12 medium-10 medium-offset-1 large-8 large-offset-2 column">
+					<input type="hidden" name="action" value="test-driiive-theme" />
+					<input id="submit" name="submit" type="submit" class="button radius" value="<?php echo esc_attr( sprintf( __( 'Test Drive %s', 'testdriiive' ), $theme->get( 'Name' ) ) ); ?>" <?php if ( empty( $theme ) ) : ?> disabled <?php endif; ?> />
+				</fieldset>
 
-			</form>
+			<?php else : ?>
+				<div class="alert-box warning small-12 medium-10 medium-offset-1 large-8 large-offset-2 column">
+						<p><?php _e( 'Invalid theme specified.', 'testdriiive' ); ?></p>
+				</div>
+			<?php endif; ?>
 
-		</div>
+		</form>
 
 	</section>
 

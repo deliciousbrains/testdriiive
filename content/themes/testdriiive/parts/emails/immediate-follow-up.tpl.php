@@ -1,4 +1,4 @@
-Hey <?php echo esc_html( $user->display_name ); ?>,
+Hey <?php echo esc_html( $user->first_name ); ?>,
 
 Great to see you taking at test drive of our <?php echo esc_html( $theme->get( 'Name' ) ); ?> theme!
 
