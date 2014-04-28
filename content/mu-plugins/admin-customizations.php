@@ -26,4 +26,30 @@ if ( ! empty( $td_demo_site ) ) {
 
 	}, 99 );
 
+	add_action( 'customize_controls_print_footer_scripts', function(){
+
+		$stylesheet = get_option( 'stylesheet' );
+
+		?>
+		<script>
+			/**
+			 * Open the theme description when the customizer is opened
+			 */
+			jQuery(document).ready(function($){
+
+				var customizeInfo = $('#customize-info');
+
+				customizeInfo.find('.accordion-section-content').append('<p><a href="<?php echo esc_url( td_get_theme_purchase_link( $stylesheet ) ); ?>" class="button button-primary">Purchase Theme</a></p>' );
+
+				setTimeout( function(){
+					customizeInfo.find('.accordion-section-title').trigger('click');
+				}, 100 )
+			})
+
+		</script>
+
+		<?php
+
+	});
+
 }
