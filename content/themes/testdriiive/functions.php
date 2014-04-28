@@ -65,7 +65,13 @@ class Test_Driiive {
 		// @todo if the user is already logged in, they shouldn't be
 
 		if ( empty( $_POST['first-name'] ) || empty( $_POST['last-name'] ) || empty( $_POST['email'] ) ) {
-			wp_die( __( 'Both name and email address are required details.', 'testdriiive' ) );
+			$error_message = __( 'Both name and email address are required details.', 'testdriiive' );
+			if ( ! empty( $_POST['in-iframe'] ) ) {
+				echo json_encode( array( 'status' => 'error', 'message' => $error_message ) );
+			} else {
+				wp_die( $error_message );
+			}
+			exit;
 		}
 
 		/**
@@ -86,7 +92,13 @@ class Test_Driiive {
 			'user_pass'     => $password
 		) );
 		if ( is_wp_error( $user_id ) ) {
-			wp_die( $user_id->get_error_message() );
+			$error_message = $user_id->get_error_message();
+			if ( ! empty( $_POST['in-iframe'] ) ) {
+				echo json_encode( array( 'status' => 'error', 'message' => $error_message ) );
+			} else {
+				wp_die( $error_message );
+			}
+			exit;
 		}
 		$user = get_user_by( 'id', $user_id );
 
@@ -116,10 +128,15 @@ class Test_Driiive {
 		$subject = sprintf( '%s theme test drive', $theme->get( 'Name' ) );
 		wp_mail( $user->user_email, $subject, $message );
 
-		wp_redirect( add_query_arg( array(
-			'auto-login'     => $user_login,
-			'secret'         => td_get_auto_login_secret( $user_login ),
-			), $demo_site_url ) );
+		$auto_login_url = add_query_arg( array(
+				'auto-login'     => $user_login,
+				'secret'         => td_get_auto_login_secret( $user_login ),
+				), $demo_site_url );
+		if ( ! empty( $_POST['in-iframe'] ) ) {
+			echo json_encode( array( 'status' => 'success', 'message' => $auto_login_url ) );
+		} else {
+			wp_redirect( $auto_login_url );
+		}
 		exit;
 	}
 

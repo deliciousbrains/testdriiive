@@ -37,8 +37,39 @@
 
 				<fieldset class="small-12 medium-10 medium-offset-1 large-8 large-offset-2 column">
 					<input type="hidden" name="action" value="test-driiive-theme" />
+					<input type="hidden" id="in-iframe" name="in-iframe" value="0" />
 					<input id="submit" name="submit" type="submit" class="button radius" value="<?php echo esc_attr( sprintf( __( 'Test Drive %s', 'testdriiive' ), $theme->get( 'Name' ) ) ); ?>" <?php if ( empty( $theme ) ) : ?> disabled <?php endif; ?> />
 				</fieldset>
+
+				<script>
+					/**
+					 * Support for iframing the form
+					 */
+					if ( window.location.href != window.parent.location.href ) {
+
+						jQuery(document).ready(function($){
+
+							$('#lead-capture #in-iframe').val('1');
+
+							$('#lead-capture').on('submit', function( e ){
+								e.preventDefault();
+
+								var data = $(this).serializeArray();
+								$.post( window.location.href, data, function( response ) {
+									response = $.parseJSON( response );
+									if ( 'success' == response.status ) {
+										window.parent.location.href = response.message;
+									} else {
+										alert( response.message );
+									}
+								} );
+
+							});
+
+						});
+					}
+
+				</script>
 
 			<?php else : ?>
 				<div class="alert-box warning small-12 medium-10 medium-offset-1 large-8 large-offset-2 column">
