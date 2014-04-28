@@ -71,7 +71,7 @@ class Test_Driiive_CLI_Command extends WP_CLI_Command {
 				'user'           => $user,
 				'theme'          => $theme,
 				'demo_site_url'  => Test_Driiive()->get_user_demo_site_url( $user ),
-				'purchase_url'   => 'https://array.is/themes/' . $theme->get_stylesheet() . '/',
+				'purchase_url'   => td_get_theme_purchase_link( $theme->get_stylesheet() ),
 				);
 			$message = Test_Driiive()->get_template( 'emails/one-day-follow-up', $vars );
 			$subject = sprintf( 'How was your test drive of %s?', $theme->get( 'Name' ) );
