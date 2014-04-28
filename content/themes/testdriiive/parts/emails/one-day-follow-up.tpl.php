@@ -1,4 +1,4 @@
-Hi <?php echo esc_html( $user->display_name ); ?>,
+Hi <?php echo esc_html( $user->first_name ); ?>,
 
 How did the test drive of <?php echo esc_html( $theme->get( 'Name' ) ); ?> go?
 

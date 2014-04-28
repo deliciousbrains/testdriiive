@@ -64,22 +64,26 @@ class Test_Driiive {
 
 		// @todo if the user is already logged in, they shouldn't be
 
-		if ( empty( $_POST['name'] ) || empty( $_POST['email'] ) ) {
+		if ( empty( $_POST['first-name'] ) || empty( $_POST['last-name'] ) || empty( $_POST['email'] ) ) {
 			wp_die( __( 'Both name and email address are required details.', 'testdriiive' ) );
 		}
 
 		/**
 		 * Create a user account
 		 */
-		$name = sanitize_text_field( $_POST['name'] );
+		$first_name = sanitize_text_field( $_POST['first-name'] );
+		$last_name = sanitize_text_field( $_POST['last-name'] );
+		$display_name = $first_name . ' ' . $last_name;
 		$email = sanitize_email( $_POST['email'] );
-		$user_login = md5( $name . $email . time() );
+		$user_login = md5( $display_name . $email . time() );
 		$password = wp_generate_password();
 		$user_id = wp_insert_user( array(
-			'user_login' => $user_login,
-			'user_email' => $email,
-			'display_name' => $name,
-			'user_pass' => $password
+			'user_login'    => $user_login,
+			'user_email'    => $email,
+			'display_name'  => $display_name,
+			'first_name'    => $first_name,
+			'last_name'     => $last_name,
+			'user_pass'     => $password
 		) );
 		if ( is_wp_error( $user_id ) ) {
 			wp_die( $user_id->get_error_message() );
@@ -98,7 +102,7 @@ class Test_Driiive {
 		$base_cmd = "wp --url={$demo_site_url}";
 		shell_exec( escapeshellcmd( "{$base_cmd} core install --title='Just another Test Driiive Site' --admin_user={$user_login} --admin_email={$email} --admin_password={$password}" ) );
 		shell_exec( escapeshellcmd( "{$base_cmd} theme activate {$theme->get_stylesheet()}" ) );
-		shell_exec( escapeshellcmd( "{$base_cmd} user update {$user_login} --display_name='{$name}'" ) );
+		shell_exec( escapeshellcmd( "{$base_cmd} user update {$user_login} --display_name='{$display_name}' --first_name='{$first_name}' --last_name='{$last_name}'" ) );
 
 		/**
 		 * Send an immediate follow-up
