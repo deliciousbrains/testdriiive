@@ -121,6 +121,12 @@ class Test_Driiive_CLI_Command extends WP_CLI_Command {
 				WP_CLI::line( "Deleted demo site tables for {$user->user_login}." );
 			}
 
+			$uploads_dir = ABSPATH . 'content/uploads/' . $user->user_login;
+			if ( is_dir( $uploads_dir ) ) {
+				shell_exec( escapeshellcmd( "rm -rf {$uploads_dir}" ) );
+				WP_CLI::line( "Deleted uploads directory for {$user->user_login}." );
+			}
+
 		}
 
 		WP_CLI::success( "Pruned demo sites." );

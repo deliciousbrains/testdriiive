@@ -26,7 +26,7 @@ if ( file_exists( dirname( __FILE__ ) . '/wp-config-env.php' ) ) {
 /**
  * Magic db-switching action
  */
-global $td_demo_site, $table_prefix;
+global $td_demo_site, $td_main_site, $table_prefix;
 
 if ( ! empty( $_SERVER['HTTP_HOST'] ) ) {
 
@@ -35,8 +35,10 @@ if ( ! empty( $_SERVER['HTTP_HOST'] ) ) {
 		$key = array_shift( $parts );
 		$key = strtolower( $key );
 		$td_demo_site = preg_replace( '/[^a-z0-9_\-]/', '', $key );
+		$td_main_site = implode( '.', $parts );
 	} else {
 		$td_demo_site = false;
+		$td_main_site = $_SERVER['HTTP_HOST'];
 	}
 
 }
@@ -123,6 +125,9 @@ define( 'MANDRILL_API_KEY', 'CmqEKOc1FM75qv9mXdWr4A' );
 define( 'WP_BASE_URL', parse_url( WP_HOME, PHP_URL_SCHEME ) . '://' . parse_url( WP_HOME, PHP_URL_HOST ) );
 define( 'WP_CONTENT_DIR', dirname( __FILE__ ) . '/content' );
 define( 'WP_CONTENT_URL', WP_BASE_URL . '/content' );
+if ( ! empty( $td_demo_site ) ) {
+	define( 'UPLOADS', 'content/uploads/' . $td_demo_site );
+}
 
 // Set path to MU Plugins.
 define( 'WPMU_PLUGIN_DIR', dirname( __FILE__ ) . '/content/mu-plugins' );
@@ -132,7 +137,7 @@ define( 'WPMU_PLUGIN_URL', WP_BASE_URL . '/content/mu-plugins' );
 define( 'WP_DEFAULT_THEME', 'testdriiive' );
 
 // Prevent editing of files through the admin.
-define( 'DISALLOW_FILE_EDIT', true );
+define( 'DISALLOW_FILE_MODS', true );
 
 /* That's all, stop editing! Happy blogging. */
 
