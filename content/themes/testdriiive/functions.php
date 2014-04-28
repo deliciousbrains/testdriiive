@@ -86,6 +86,11 @@ class Test_Driiive {
 		}
 
 		/**
+		 * Capture other useful details
+		 */
+		update_user_meta( $user_id, 'signup_theme', $theme->get_stylesheet() );
+
+		/**
 		 * Configure their demo site
 		 */
 		$demo_site_url = $this->get_user_demo_site_url( $user_id );
@@ -137,6 +142,26 @@ class Test_Driiive {
 
 		$home_domain = parse_url( home_url(), PHP_URL_HOST );
 		return parse_url( home_url(), PHP_URL_SCHEME ) . '://' . $user->user_login . '.' . $home_domain;
+	}
+
+	/**
+	 * Get a rendered template
+	 *
+	 * @param string $template_name
+	 * @param array $vars
+	 * @return string
+	 */
+	public function get_template( $template_name, $vars = array() ) {
+
+		$full_path = get_stylesheet_directory() . '/parts/' . $template_name . '.tpl.php';
+		if ( ! file_exists( $full_path ) ) {
+			return '';
+		}
+
+		extract( $vars );
+		ob_start();
+		include $full_path;
+		return wpautop( ob_get_clean() );
 	}
 
 }
