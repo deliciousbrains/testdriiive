@@ -26,7 +26,7 @@ if ( file_exists( dirname( __FILE__ ) . '/wp-config-env.php' ) ) {
 /**
  * Magic db-switching action
  */
-global $td_demo_site, $table_prefix;
+global $td_demo_site, $td_main_site, $table_prefix;
 
 if ( ! empty( $_SERVER['HTTP_HOST'] ) ) {
 
@@ -35,8 +35,10 @@ if ( ! empty( $_SERVER['HTTP_HOST'] ) ) {
 		$key = array_shift( $parts );
 		$key = strtolower( $key );
 		$td_demo_site = preg_replace( '/[^a-z0-9_\-]/', '', $key );
+		$td_main_site = implode( '.', $parts );
 	} else {
 		$td_demo_site = false;
+		$td_main_site = $_SERVER['HTTP_HOST'];
 	}
 
 }
