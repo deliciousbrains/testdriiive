@@ -12,3 +12,8 @@ add_filter( 'wp_mail_from', function() {
 add_filter( 'wp_mail_from_name', function() {
 	return 'Mike McAlister';
 });
+
+/**
+ * Don't send the default new blog notification
+ */
+function wp_new_blog_notification() {}
