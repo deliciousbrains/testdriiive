@@ -15,3 +15,9 @@ $fix_bad_theme_root = function( $value ) {
 add_filter( 'option_stylesheet_root', $fix_bad_theme_root );
 add_filter( 'option_template_root', $fix_bad_theme_root );
 
+/**
+ * Get the purchase link for a given theme
+ */
+function td_get_theme_purchase_link( $stylesheet ) {
+	return 'https://array.is/themes/' . $stylesheet . '/';
+}
