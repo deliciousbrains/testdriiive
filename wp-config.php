@@ -114,6 +114,11 @@ if ( defined( 'LOCAL_DEV' ) && LOCAL_DEV ) {
 
 }
 
+/**
+ * Secrets
+ */
+define( 'MANDRILL_API_KEY', 'CmqEKOc1FM75qv9mXdWr4A' );
+
 // Define path & url for Content
 define( 'WP_BASE_URL', parse_url( WP_HOME, PHP_URL_SCHEME ) . '://' . parse_url( WP_HOME, PHP_URL_HOST ) );
 define( 'WP_CONTENT_DIR', dirname( __FILE__ ) . '/content' );
