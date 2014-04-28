@@ -74,7 +74,14 @@ class Test_Driiive_CLI_Command extends WP_CLI_Command {
 				'purchase_url'   => 'https://array.is/themes/' . $theme->get_stylesheet() . '/',
 				);
 			$message = Test_Driiive()->get_template( 'emails/one-day-follow-up', $vars );
-			WP_CLI::line( "Sent follow up email to {$user->ID} ({$user->user_email}) who signed up to try {$theme->get('Name')}." );
+			$subject = sprintf( 'How was your test drive of %s?', $theme->get( 'Name' ) );
+			$ret = wp_mail( $user->user_email, $subject, $message );
+			if ( $ret ) {
+				WP_CLI::line( "Sent follow-up email to {$user->ID} ({$user->user_email}) who signed up to try {$theme->get('Name')}." );
+			} else {
+				WP_CLI::warning( "Error sending follow-up email to {$user->ID} ({$user->user_email}) who signed up to try {$theme->get('Name')}." );
+			}
+
 			update_user_meta( $user->ID, $meta_key, '1' );
 
 		}
