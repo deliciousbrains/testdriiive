@@ -132,7 +132,7 @@ define( 'WPMU_PLUGIN_URL', WP_BASE_URL . '/content/mu-plugins' );
 define( 'WP_DEFAULT_THEME', 'testdriiive' );
 
 // Prevent editing of files through the admin.
-define( 'DISALLOW_FILE_EDIT', true );
+define( 'DISALLOW_FILE_MODS', true );
 
 /* That's all, stop editing! Happy blogging. */
 
