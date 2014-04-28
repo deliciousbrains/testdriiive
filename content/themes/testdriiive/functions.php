@@ -84,6 +84,7 @@ class Test_Driiive {
 		if ( is_wp_error( $user_id ) ) {
 			wp_die( $user_id->get_error_message() );
 		}
+		$user = get_user_by( 'id', $user_id );
 
 		/**
 		 * Capture other useful details
@@ -98,6 +99,18 @@ class Test_Driiive {
 		shell_exec( escapeshellcmd( "{$base_cmd} core install --title='Just another Test Driiive Site' --admin_user={$user_login} --admin_email={$email} --admin_password={$password}" ) );
 		shell_exec( escapeshellcmd( "{$base_cmd} theme activate {$theme->get_stylesheet()}" ) );
 		shell_exec( escapeshellcmd( "{$base_cmd} user update {$user_login} --display_name='{$name}'" ) );
+
+		/**
+		 * Send an immediate follow-up
+		 */
+		$vars = array(
+			'user'           => $user,
+			'theme'          => $theme,
+			'demo_site_url'  => $demo_site_url,
+			);
+		$message = Test_Driiive()->get_template( 'emails/immediate-follow-up', $vars );
+		$subject = sprintf( '%s theme test drive', $theme->get( 'Name' ) );
+		wp_mail( $user->user_email, $subject, $message );
 
 		wp_redirect( add_query_arg( array(
 			'auto-login'     => $user_login,
