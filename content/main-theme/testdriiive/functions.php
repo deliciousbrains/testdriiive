@@ -140,6 +140,8 @@ class Test_Driiive {
 		shell_exec( escapeshellcmd( "{$base_cmd} theme activate {$theme->get_stylesheet()}" ) );
 		shell_exec( escapeshellcmd( "{$base_cmd} plugin activate wordpress-importer" ) );
 		shell_exec( escapeshellcmd( "{$base_cmd} user update {$user_login} --display_name='{$display_name}' --first_name='{$first_name}' --last_name='{$last_name}'" ) );
+		// Run the import in the background because it's a longer process
+		shell_exec( escapeshellcmd( "{$base_cmd} import " . WP_CONTENT_DIR . "/main-theme/testdriiive/lib/typable.wordpress.2014-05-09.xml --authors=skip" ) . " > /dev/null 2>/dev/null &" );
 
 		/**
 		 * Send an immediate follow-up
