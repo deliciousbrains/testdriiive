@@ -133,9 +133,6 @@ if ( ! empty( $td_demo_site ) ) {
 define( 'WPMU_PLUGIN_DIR', dirname( __FILE__ ) . '/content/mu-plugins' );
 define( 'WPMU_PLUGIN_URL', WP_BASE_URL . '/content/mu-plugins' );
 
-// Set default theme.
-define( 'WP_DEFAULT_THEME', 'testdriiive' );
-
 // Prevent editing of files through the admin.
 define( 'DISALLOW_FILE_MODS', true );
 

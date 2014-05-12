@@ -1,6 +1,18 @@
 <?php
 
-register_theme_directory( ABSPATH . 'wp-content/themes' );
+global $td_demo_site;
+
+register_theme_directory( WP_CONTENT_DIR . '/demo-themes' );
+if ( empty( $td_demo_site ) ) {
+
+	register_theme_directory( WP_CONTENT_DIR . '/main-theme' );
+
+	$main_site_theme = function() {
+		return 'testdriiive';
+	};
+	add_filter( 'pre_option_stylesheet', $main_site_theme );
+	add_filter( 'pre_option_template', $main_site_theme );
+}
 
 /**
  * Fix a bad theme root for demo sites
