@@ -137,6 +137,7 @@ class Test_Driiive {
 		$base_cmd = "wp --url={$demo_site_url}";
 		shell_exec( escapeshellcmd( "{$base_cmd} core install --title='Just another Test Driiive Site' --admin_user={$user_login} --admin_email={$email} --admin_password={$password}" ) );
 		shell_exec( escapeshellcmd( "{$base_cmd} theme activate {$theme->get_stylesheet()}" ) );
+		shell_exec( escapeshellcmd( "{$base_cmd} plugin activate wordpress-importer" ) );
 		shell_exec( escapeshellcmd( "{$base_cmd} user update {$user_login} --display_name='{$display_name}' --first_name='{$first_name}' --last_name='{$last_name}'" ) );
 
 		/**
