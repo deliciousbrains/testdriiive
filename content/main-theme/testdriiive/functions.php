@@ -104,7 +104,11 @@ class Test_Driiive {
 		$last_name = sanitize_text_field( $_POST['last-name'] );
 		$display_name = $first_name . ' ' . $last_name;
 		$email = sanitize_email( $_POST['email'] );
-		$user_login = md5( $display_name . $email . time() );
+		if ( defined( 'LOCAL_DEV' ) && LOCAL_DEV ) {
+			$user_login = md5( $display_name . $email );
+		} else {
+			$user_login = md5( $display_name . $email . time() );
+		}
 		$password = wp_generate_password();
 		$user_id = wp_insert_user( array(
 			'user_login'    => $user_login,
@@ -135,9 +139,34 @@ class Test_Driiive {
 		 */
 		$demo_site_url = $this->get_user_demo_site_url( $user_id );
 		$base_cmd = "wp --url={$demo_site_url}";
-		shell_exec( escapeshellcmd( "{$base_cmd} core install --title='Just another Test Driiive Site' --admin_user={$user_login} --admin_email={$email} --admin_password={$password}" ) );
-		shell_exec( escapeshellcmd( "{$base_cmd} theme activate {$theme->get_stylesheet()}" ) );
-		shell_exec( escapeshellcmd( "{$base_cmd} user update {$user_login} --display_name='{$display_name}' --first_name='{$first_name}' --last_name='{$last_name}'" ) );
+		$tables = array(
+			'users',
+			'usermeta',
+			'comments',
+			'links',
+			'options',
+			'posts',
+			'postmeta',
+			'terms',
+			'term_taxonomy',
+			'term_relationships',
+			'commentmeta',
+			);
+		$query = 'RENAME TABLE ';
+		foreach( $tables as $table ) {
+			$query .= 'wp_samplesite_' . $table . ' TO wp_' . $user_login . '_' . $table . ', ';
+		}
+		$query = rtrim( $query, ', ' ) . ';';
+		// No escaping because it breaks the query
+		shell_exec( "wp db import " . WP_CONTENT_DIR . "/main-theme/testdriiive/lib/testdriiive.sql" );
+		shell_exec( "wp db query '{$query}'" );
+		shell_exec( "{$base_cmd} search-replace http://samplesite.testdriiive.dev {$demo_site_url}" );
+		shell_exec( "{$base_cmd} role reset --all" );
+		shell_exec( "{$base_cmd} user create {$user_login} {$email} --role=administrator --display_name='{$display_name}' --first_name='{$first_name}' --last_name='{$last_name}'" );
+		shell_exec( "{$base_cmd} user delete samplesite --yes" );
+		shell_exec( "{$base_cmd} theme activate {$theme->get_stylesheet()}" );
+		$target_uploads = WP_CONTENT_DIR . "/uploads/{$user_login}";
+		shell_exec( "mkdir {$target_uploads}; cp -R " . WP_CONTENT_DIR . "/sample-uploads/* {$target_uploads}" );
 
 		/**
 		 * Send an immediate follow-up
