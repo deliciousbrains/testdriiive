@@ -104,7 +104,11 @@ class Test_Driiive {
 		$last_name = sanitize_text_field( $_POST['last-name'] );
 		$display_name = $first_name . ' ' . $last_name;
 		$email = sanitize_email( $_POST['email'] );
-		$user_login = md5( $display_name . $email . time() );
+		if ( defined( 'LOCAL_DEV' ) && LOCAL_DEV ) {
+			$user_login = md5( $display_name . $email );
+		} else {
+			$user_login = md5( $display_name . $email . time() );
+		}
 		$password = wp_generate_password();
 		$user_id = wp_insert_user( array(
 			'user_login'    => $user_login,
