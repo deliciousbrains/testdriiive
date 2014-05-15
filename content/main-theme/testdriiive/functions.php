@@ -139,13 +139,33 @@ class Test_Driiive {
 		 */
 		$demo_site_url = $this->get_user_demo_site_url( $user_id );
 		$base_cmd = "wp --url={$demo_site_url}";
-		shell_exec( escapeshellcmd( "{$base_cmd} core install --title='Just another Test Driiive Site' --admin_user={$user_login} --admin_email={$email} --admin_password={$password}" ) );
-		shell_exec( escapeshellcmd( "{$base_cmd} site empty --yes" ) );
-		shell_exec( escapeshellcmd( "{$base_cmd} theme activate {$theme->get_stylesheet()}" ) );
-		shell_exec( escapeshellcmd( "{$base_cmd} plugin activate wordpress-importer" ) );
-		shell_exec( escapeshellcmd( "{$base_cmd} user update {$user_login} --display_name='{$display_name}' --first_name='{$first_name}' --last_name='{$last_name}'" ) );
-		// Run the import in the background because it's a longer process
-		shell_exec( escapeshellcmd( "{$base_cmd} import " . WP_CONTENT_DIR . "/main-theme/testdriiive/lib/typable.wordpress.2014-05-09.xml --authors=skip" ) . " > /dev/null 2>/dev/null &" );
+		$tables = array(
+			'users',
+			'usermeta',
+			'comments',
+			'links',
+			'options',
+			'posts',
+			'postmeta',
+			'terms',
+			'term_taxonomy',
+			'term_relationships',
+			'commentmeta',
+			);
+		$query = 'RENAME TABLE ';
+		foreach( $tables as $table ) {
+			$query .= 'wp_samplesite_' . $table . ' TO wp_' . $user_login . '_' . $table . ', ';
+		}
+		$query = rtrim( $query, ', ' ) . ';';
+		// No escaping because it breaks the query
+		shell_exec( "wp db import " . WP_CONTENT_DIR . "/main-theme/testdriiive/lib/testdriiive.sql" );
+		shell_exec( "wp db query '{$query}'" );
+		shell_exec( "{$base_cmd} search-replace http://samplesite.testdriiive.dev {$demo_site_url}" );
+		shell_exec( "{$base_cmd} role reset --all" );
+		shell_exec( "{$base_cmd} user create {$user_login} {$email} --role=administrator --display_name='{$display_name}' --first_name='{$first_name}' --last_name='{$last_name}'" );
+		shell_exec( "{$base_cmd} theme activate {$theme->get_stylesheet()}" );
+		$target_uploads = WP_CONTENT_DIR . "/uploads/{$user_login}";
+		shell_exec( "mkdir {$target_uploads}; cp -R " . WP_CONTENT_DIR . "/sample-uploads/* {$target_uploads}" );
 
 		/**
 		 * Send an immediate follow-up
