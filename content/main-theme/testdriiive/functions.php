@@ -163,10 +163,8 @@ class Test_Driiive {
 		shell_exec( "{$base_cmd} search-replace http://samplesite.testdriiive.dev {$demo_site_url}" );
 		shell_exec( "{$base_cmd} role reset --all" );
 		shell_exec( "{$base_cmd} user create {$user_login} {$email} --role=administrator --display_name='{$display_name}' --first_name='{$first_name}' --last_name='{$last_name}'" );
-		shell_exec( "{$base_cmd} user delete samplesite --yes" );
 		shell_exec( "{$base_cmd} theme activate {$theme->get_stylesheet()}" );
 		shell_exec( "{$base_cmd} option update blogname '{$theme->get( 'Name' )}'" );
-		shell_exec( "{$base_cmd} option update blogdescription 'A neat little WordPress theme.'" );
 		$target_uploads = WP_CONTENT_DIR . "/uploads/{$user_login}";
 		shell_exec( "mkdir {$target_uploads}; cp -R " . WP_CONTENT_DIR . "/sample-uploads/* {$target_uploads}" );
 
