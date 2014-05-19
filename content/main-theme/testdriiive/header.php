@@ -11,7 +11,11 @@
 <head>
 	<meta charset="<?php bloginfo( 'charset' ); ?>">
 	<meta name="viewport" content="width=device-width">
-	<title><?php wp_title( '|', true, 'right' ); ?></title>
+	<?php if ( $theme = Test_Driiive()->get_selected_theme() ) : ?>
+	<title><?php echo sprintf( "Test Drive %s Theme", $theme->get( 'Name' ) ); ?></title>
+	<?php else : ?>
+	<title>Test Driiive</title>
+	<?php endif; ?>
 	<link rel="profile" href="http://gmpg.org/xfn/11">
 	<link rel="pingback" href="<?php bloginfo( 'pingback_url' ); ?>">
 	<?php wp_head(); ?>

@@ -7,7 +7,7 @@
 			<?php if ( $theme = Test_Driiive()->get_selected_theme() ) : ?>
 
 				<fieldset class="small-12 medium-10 medium-offset-1 large-8 large-offset-2 column">
-					<h2><?php printf( __( 'You are one step away from test driving %s', 'testdriiive' ), $theme->get( 'Name' ) ); ?></h2>
+					<h2><?php printf( __( 'Test Drive %s Theme', 'testdriiive' ), $theme->get( 'Name' ) ); ?></h2>
 
 					<?php if ( $screenshot = $theme->get_screenshot() ) : ?>
 						<img src="<?php echo esc_url( $screenshot ); ?>" />
