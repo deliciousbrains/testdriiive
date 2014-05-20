@@ -31,7 +31,8 @@ global $td_demo_site, $td_main_site, $table_prefix;
 if ( ! empty( $_SERVER['HTTP_HOST'] ) ) {
 
 	$parts = explode( '.', $_SERVER['HTTP_HOST'] );
-	if ( count( $parts ) > 2 ) {
+	$pd_parts = explode( '.', constant( 'PRIMARY_DOMAIN' ) );
+	if ( count( $parts ) > count( $pd_parts ) ) {
 		$key = array_shift( $parts );
 		$key = strtolower( $key );
 		$td_demo_site = preg_replace( '/[^a-z0-9_\-]/', '', $key );
