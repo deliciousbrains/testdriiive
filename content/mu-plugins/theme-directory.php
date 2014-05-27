@@ -12,6 +12,13 @@ if ( empty( $td_demo_site ) ) {
 	};
 	add_filter( 'pre_option_stylesheet', $main_site_theme );
 	add_filter( 'pre_option_template', $main_site_theme );
+
+	// This is incorrectly set sometimes somehow https://github.com/deliciousbrains/testdriiive/issues/13
+	$main_site_theme_root = function() {
+		return '/main-theme';
+	};
+	add_filter( 'pre_option_stylesheet_root', $main_site_theme_root );
+	add_filter( 'pre_option_template_root', $main_site_theme_root );
 }
 
 /**
